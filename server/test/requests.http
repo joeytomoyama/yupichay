@@ -1,0 +1,22 @@
+GET http://localhost/api/posts
+
+###
+
+POST http://localhost/api/posts
+Content-Type: application/json
+
+{
+    "geometry": {
+        "coordinates": [
+            0,
+            0
+        ]
+    },
+    "properties": {
+        "content": "Hello World"
+    }
+}
+
+###
+
+DELETE http://localhost/api/posts/nuke
