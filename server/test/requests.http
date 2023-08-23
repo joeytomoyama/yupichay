@@ -2,20 +2,24 @@ GET http://localhost/api/posts
 
 ###
 
+// within: (0.045, 0.045), (-0.045, -0.045), (0.035, -0.035), (-0.035, 0.035)
+
 POST http://localhost/api/posts
 Content-Type: application/json
 
 {
-    "geometry": {
+    "message": "Hello, world!",
+    "location": {
         "coordinates": [
-            0,
-            0
+            -0.045,
+            -0.045
         ]
-    },
-    "properties": {
-        "content": "Hello World"
     }
 }
+
+###
+
+GET http://localhost/api/posts/0/0/80000000000
 
 ###
 

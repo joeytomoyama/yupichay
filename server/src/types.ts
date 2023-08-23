@@ -1,10 +1,8 @@
 export interface PostType {
-    type?: string,
-    geometry: {
+    message: string,
+    likes?: number,
+    location: {
         type?: string,
         coordinates: Array<number>
     },
-    properties: {
-        content: string
-    }
 }

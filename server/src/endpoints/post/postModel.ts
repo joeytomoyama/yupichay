@@ -1,11 +1,16 @@
 import mongoose from 'mongoose'
 
 const postSchema = new mongoose.Schema({
-    type: {
+    message: {
         type: String,
-        default: 'Feature'
+        required: true
     },
-    geometry: {
+    // author: User,
+    likes: {
+        type: Number,
+        default: 0
+    },
+    location: {
         type: {
             type: String,
             enum: ['Point'],
@@ -15,15 +20,10 @@ const postSchema = new mongoose.Schema({
             type: [Number],
             required: true
         }
-    },
-    properties: {
-        content: {
-            type: String,
-            required: true
-        }
-        // author: User
     }
 })
+
+postSchema.index({ 'geometry.coordinates': '2dsphere' });
 
 const postModel = mongoose.model('Post', postSchema)
 
