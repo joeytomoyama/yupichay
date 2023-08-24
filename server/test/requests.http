@@ -11,15 +11,23 @@ Content-Type: application/json
     "message": "Hello, world!",
     "location": {
         "coordinates": [
-            -0.045,
-            -0.045
+            181,
+            90
         ]
     }
 }
 
 ###
 
-GET http://localhost/api/posts/0/0/80000000000
+GET http://localhost/api/posts/0/0/6000000000000000000000000000000000000000
+
+###
+
+PUT http://localhost/api/posts/64e6473b09d158257296fc6a/like
+
+###
+
+DELETE http://localhost/api/posts/64e779b1bade4a84cd7d038a/
 
 ###
 

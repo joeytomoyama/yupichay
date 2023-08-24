@@ -18,7 +18,14 @@ const postSchema = new mongoose.Schema({
         },
         coordinates: {
             type: [Number],
-            required: true
+            required: true,
+            validate: {
+                validator: (coordinates: Array<number>) => {
+                    const [longitude, latitude] = coordinates
+                    return coordinates.length === 2 && longitude >= -180 && longitude <= 180 && latitude >= -90 && latitude <= 90
+                },
+                message: 'invalid coordinates'
+            }
         }
     }
 })
