@@ -1,4 +1,4 @@
-GET http://localhost/api/posts
+GET http://localhost:3000/api/posts
 
 ###
 
@@ -19,7 +19,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost/api/posts/0/0/6000000000000000000000000000000000000000
+GET http://localhost/api/posts/0/0/6
 
 ###
 
@@ -27,8 +27,8 @@ PUT http://localhost/api/posts/64e6473b09d158257296fc6a/like
 
 ###
 
-DELETE http://localhost/api/posts/64e779b1bade4a84cd7d038a/
+DELETE http://localhost:3000/api/posts/64e7777d7299a6f95e37a999/
 
 ###
 
-DELETE http://localhost/api/posts/nuke
+DELETE http://localhost:3000/api/posts/nuke

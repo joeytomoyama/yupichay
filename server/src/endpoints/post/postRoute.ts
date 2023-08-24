@@ -52,6 +52,11 @@ router.put('/:postId/like', async (req, res) => {
     }
 })
 
+router.delete('/nuke', async (req: Request, res: Response) => {
+    await Service.nukeAllPosts()
+    res.status(204).send('all posts nuked')
+})
+
 router.delete('/:postId', async (req, res) => {
     const { postId } = req.params;
 
@@ -62,11 +67,6 @@ router.delete('/:postId', async (req, res) => {
         console.error(error)
         return res.status(500).json({ error: error.message })
     }
-})
-
-router.delete('/nuke', async (req: Request, res: Response) => {
-    await Service.nukeAllPosts()
-    res.status(204).send('all posts nuked')
 })
 
 export default router

@@ -14,4 +14,5 @@ app.use(express.json())
 
 app.use('/api/posts', postRoute)
 
-app.listen(process.env.PORT, () => console.log(`listening at port: ${process.env.PORT}`))
+// app.listen(process.env.PORT, () => console.log(`listening at port: ${process.env.PORT}`))
+app.listen(3000, () => console.log(`listening at port: ${3000}`))
