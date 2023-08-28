@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
-import { Button, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Button, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native'
 
 import CustomPostMarker from './CustomPostMarker';
+import MakePost from './MakePost';
 
 export default function PostList({ navigation }) { //
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
 
     const [posts, setPosts] = useState([])
     const [isLoading, setLoading] = useState(true)
+    const [makePostVisible, setMakePostVisible] = useState(false);
 
     const getPosts = async () => {
         try {
@@ -42,15 +44,15 @@ export default function PostList({ navigation }) { //
                             latitude: post.location.coordinates[0],
                             longitude: post.location.coordinates[1]
                         }}
-                        // title={post.message}
                     >
                         <CustomPostMarker post={post} />
                     </Marker>
                 ))}
             </MapView>
-            <TouchableOpacity style={styles.postButton} title="Add Post" onPress={() => navigation.navigate('MakePost')}>
+            <TouchableHighlight style={styles.postButton} title="Add Post" onPress={() => setMakePostVisible(true)}>
                 <Text style={styles.buttonText}>make post</Text>
-            </TouchableOpacity>
+            </TouchableHighlight>
+            <MakePost posts={posts} setPosts={setPosts} makePostVisible={makePostVisible} setMakePostVisible={setMakePostVisible} />
             {/* <Button title="Refresh" onPress={() => getPosts()} /> */}
         </View>
     )
