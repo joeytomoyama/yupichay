@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Button, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
 export default function MakePost({ navigation }) { //
-    const apiBaseUrl = 'http://172.16.48.159:3000/api'
+    const apiBaseUrl = 'http://192.168.0.244:3000/api'
 
     // const [posts, setPosts] = useState([])
     const [isLoading, setLoading] = useState(true)
