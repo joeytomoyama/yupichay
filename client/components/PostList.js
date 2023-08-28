@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
-import { Button, Pressable, ScrollView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
 
 import CustomPostMarker from './CustomPostMarker';
 import MakePost from './MakePost';

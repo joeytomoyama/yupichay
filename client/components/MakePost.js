@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Modal, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Button, Modal, StyleSheet, Text, TextInput, View } from 'react-native'
 
 export default function MakePost({ posts, setPosts, makePostVisible, setMakePostVisible }) { //
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
-
-    // const [posts, setPosts] = useState([])
+    
     const [isLoading, setLoading] = useState(true)
     const [latitude, setLatitude] = useState(0)
     const [longitude, setLongitude] = useState(0)
@@ -35,66 +34,40 @@ export default function MakePost({ posts, setPosts, makePostVisible, setMakePost
     
     return (
         <View>
-            {/* <Modal
-                animationType="slide"
-                transparent={true}
-                visible={makePostVisible}
-                // onRequestClose={() => {
-                //     Alert.alert('Modal has been closed.');
-                //     setMakePostVisible(!makePostVisible);
-                // }}
-            >
-                <Text>Make Post</Text>
-                <TextInput
-                    id='latitudeText'
-                    placeholder='latitude'
-                    onChangeText={text => setLatitude(text)}
-                ></TextInput>
-                <TextInput
-                    id='longitudeText'
-                    placeholder='longitude'
-                    onChangeText={text => setLongitude(text)}
-                ></TextInput>
-                <TextInput
-                    id='messageText'
-                    placeholder='message'
-                    onChangeText={text => setMessage(text)}
-                ></TextInput>
-                <Button title="Add Post" onPress={(makePost)} />
-            </Modal> */}
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={makePostVisible}
                 onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
-                setMakePostVisible(!makePostVisible);
+                    Alert.alert('Modal has been closed.');
+                    setMakePostVisible(!makePostVisible);
                 }}>
                 <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                    {/* <Text style={styles.modalText}>Hello World!</Text>
-                    <Pressable
-                        style={[styles.button, styles.buttonClose]}
-                        onPress={() => setMakePostVisible(!makePostVisible)}>
-                        <Text style={styles.textStyle}>Hide Modal</Text>
-                    </Pressable> */}
-                    <Text>Make Post</Text>
+                    <Text style={{fontSize: 24}}>Make Post</Text>
                     <TextInput
-                        id='latitudeText'
+                        keyboardType='numeric'
                         placeholder='latitude'
+                        style={styles.inputText}
                         onChangeText={text => setLatitude(text)}
                     ></TextInput>
                     <TextInput
-                        id='longitudeText'
+                        keyboardType='numeric'
                         placeholder='longitude'
+                        style={styles.inputText}
                         onChangeText={text => setLongitude(text)}
                     ></TextInput>
                     <TextInput
-                        id='messageText'
                         placeholder='message'
+                        style={styles.inputText}
                         onChangeText={text => setMessage(text)}
                     ></TextInput>
                     <Button title="Add Post" onPress={(makePost)} />
+                    <Button
+                        title="Cancel"
+                        onPress={() => setMakePostVisible(false)}
+                        color="#841584"
+                    />
                 </View>
                 </View>
             </Modal>
@@ -107,7 +80,7 @@ const styles = StyleSheet.create({
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      marginTop: 22,
+    //   marginTop: 22,
     },
     modalView: {
       margin: 20,
@@ -144,4 +117,9 @@ const styles = StyleSheet.create({
       marginBottom: 15,
       textAlign: 'center',
     },
+    // make input text bigger
+    inputText: {
+        fontSize: 18,
+        padding: 5,
+    }
   });
