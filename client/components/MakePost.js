@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Button, Modal, StyleSheet, Text, TextInput, View } from 'react-native'
 
-export default function MakePost({ posts, setPosts, makePostVisible, setMakePostVisible }) { //
+export default function MakePost({ posts, setPosts, showMakePost, setShowMakePost }) { //
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
-    
+
     const [isLoading, setLoading] = useState(true)
     const [latitude, setLatitude] = useState(0)
     const [longitude, setLongitude] = useState(0)
@@ -11,23 +11,25 @@ export default function MakePost({ posts, setPosts, makePostVisible, setMakePost
 
     const makePost = async () => {
         try {
+            const newPost = {
+                message: message,
+                location: {
+                    coordinates: [longitude, latitude]
+                }
+            }
             const response = await fetch(`${apiBaseUrl}/posts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    message: message,
-                    location: {
-                        coordinates: [latitude, longitude]
-                    }
-                })
+                body: JSON.stringify(newPost)
             })
             const json = await response.json()
             setPosts([...posts, json])
             // navigation.navigate('PostList')
-            setMakePostVisible(false)
+            setShowMakePost(false)
         } catch (error) {
+            console.log(longitude, latitude)
             console.error(error)
         }
     }
@@ -37,25 +39,25 @@ export default function MakePost({ posts, setPosts, makePostVisible, setMakePost
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={makePostVisible}
+                visible={showMakePost}
                 onRequestClose={() => {
                     Alert.alert('Modal has been closed.');
-                    setMakePostVisible(!makePostVisible);
+                    setShowMakePost(!showMakePost);
                 }}>
                 <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                     <Text style={{fontSize: 24}}>Make Post</Text>
                     <TextInput
                         keyboardType='numeric'
-                        placeholder='latitude'
-                        style={styles.inputText}
-                        onChangeText={text => setLatitude(text)}
-                    ></TextInput>
-                    <TextInput
-                        keyboardType='numeric'
                         placeholder='longitude'
                         style={styles.inputText}
                         onChangeText={text => setLongitude(text)}
+                    ></TextInput>
+                    <TextInput
+                        keyboardType='numeric'
+                        placeholder='latitude'
+                        style={styles.inputText}
+                        onChangeText={text => setLatitude(text)}
                     ></TextInput>
                     <TextInput
                         placeholder='message'
@@ -65,7 +67,7 @@ export default function MakePost({ posts, setPosts, makePostVisible, setMakePost
                     <Button title="Add Post" onPress={(makePost)} />
                     <Button
                         title="Cancel"
-                        onPress={() => setMakePostVisible(false)}
+                        onPress={() => setShowMakePost(false)}
                         color="#841584"
                     />
                 </View>
