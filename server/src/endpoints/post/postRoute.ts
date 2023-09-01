@@ -19,6 +19,7 @@ router.get('/:longitude/:latitude/:radius', async (req: Request, res: Response) 
 })
 
 router.post('/', async (req: Request, res: Response) => {
+    console.log('post one post')
     const longitude = req.body.location.coordinates[0]
     const latitude = req.body.location.coordinates[1]
 
@@ -36,6 +37,7 @@ router.post('/', async (req: Request, res: Response) => {
 })
 
 router.put('/:postId/like', async (req, res) => {
+    console.log('like post')
     const { postId } = req.params;
 
     try {
@@ -53,11 +55,13 @@ router.put('/:postId/like', async (req, res) => {
 })
 
 router.delete('/nuke', async (req: Request, res: Response) => {
+    console.log('nuke all posts')
     await Service.nukeAllPosts()
     res.status(204).send('all posts nuked')
 })
 
 router.delete('/:postId', async (req, res) => {
+    console.log('delete post')
     const { postId } = req.params;
 
     try {
