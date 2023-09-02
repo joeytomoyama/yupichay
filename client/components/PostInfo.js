@@ -1,29 +1,37 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { View, StyleSheet, Text, Modal, Button } from 'react-native'
-import { ClickedPostContext, ShowInfoContext } from './PostList'
+import { usePosts } from '../contexts/PostsContext'
+import { useSelectedPost } from '../contexts/SelectedPostContext'
+import { useShowPostInfo } from '../contexts/ShowPostInfoContext'
 
 export default function PostInfo() {
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
 
-    const showInfoContext = useContext(ShowInfoContext)
-    const lastClickedPost = useContext(ClickedPostContext).clickedPost
+    const postsState =  usePosts()
+    const showInfoContext = useShowPostInfo()
+    const selectedPost = useSelectedPost().selectedPost
 
     const likePost = async () => {
         try {
-            console.log("id: " + lastClickedPost._id)
-            const response = await fetch(`${apiBaseUrl}/posts/${lastClickedPost.clickedPost._id}/like`, {
+            console.log("id: " + JSON.stringify(selectedPost))
+            const response = await fetch(`${apiBaseUrl}/posts/${selectedPost.clickedPost._id}/like`, {
                 method: 'PUT',
             })
             // const json = await response.json()
             console.log(response)
         } catch (error) {
-            console.error(error)
+            // console.error(error)
         }
+        postsState.posts.map(post => {
+            if (post._id === selectedPost._id) {
+                post.likes++
+            }
+        })
     }
 
     const deletePost = async () => {
         try {
-            const response = await fetch(`${apiBaseUrl}/posts/${lastClickedPost._id}`, {
+            const response = await fetch(`${apiBaseUrl}/posts/${selectedPost._id}`, {
                 method: 'DELETE',
             })
             // const json = await response.json()
@@ -31,7 +39,9 @@ export default function PostInfo() {
         } catch (error) {
             console.error(error)
         }
-        console.log('deletePost')
+        postsState.setPosts(postsState.posts.filter(post => post._id !== selectedPost._id))
+        // postsState.setPosts((posts) => posts.filter(post => post._id !== selectedPost._id))
+        closePostInfo()
     }
 
     const closePostInfo = () => showInfoContext.setShowPostInfo(false)
@@ -45,9 +55,9 @@ export default function PostInfo() {
                 transparent={true}
                 visible={showInfoContext.showPostInfo}>
                 <View style={styles.drawer}>
-                    <Text>{`Message: ${lastClickedPost?.message ?? null}`}</Text>
+                    <Text>{`Message: ${selectedPost?.message ?? null}`}</Text>
                     <Text>{`Author: Joey`}</Text>
-                    <Text>{`Likes: ${lastClickedPost?.likes ?? null}`}</Text>
+                    <Text>{`Likes: ${selectedPost?.likes ?? null}`}</Text>
                     <Text>{"info: " + showInfoContext.showPostInfo}</Text>
                     <Button
                         title={"like"}

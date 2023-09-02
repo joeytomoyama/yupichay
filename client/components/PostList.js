@@ -1,29 +1,31 @@
-import React, { useState, useEffect, createContext } from 'react'
-import { Text, View, TouchableHighlight, StyleSheet, RefreshControl } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Text, View, TouchableHighlight, StyleSheet } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
 import CustomPostMarker from './CustomPostMarker'
 import MakePost from './MakePost'
 import PostInfo from './PostInfo'
+import { useSelectedPost } from '../contexts/SelectedPostContext'
+import { useShowPostInfo } from '../contexts/ShowPostInfoContext'
+import { usePosts } from '../contexts/PostsContext'
 
-export const ClickedPostContext = createContext(null)
-export const ShowInfoContext = createContext(false)
 
 export default function PostList({ navigation }) { //
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
 
-    const [posts, setPosts] = useState([])
     const [showMakePost, setShowMakePost] = useState(false)
-    const [showPostInfo, setShowPostInfo] = useState(false)
-    const [clickedPost, setClickedPost] = useState(null)
-    
+
     const [isLoading, setLoading] = useState(true)
+
+    const postsContext = usePosts()
+    const selectedPostContext = useSelectedPost()
+    const showInfoContext = useShowPostInfo()
 
     const getPosts = async () => {
         try {
             const response = await fetch(`${apiBaseUrl}/posts`)
             const json = await response.json()
-            setPosts(json)
+            postsContext.setPosts(json)
         } catch (error) {
             console.error(error)
         } finally {
@@ -36,11 +38,11 @@ export default function PostList({ navigation }) { //
     }, [])
     
     return (
-        <ClickedPostContext.Provider value={{ clickedPost, setClickedPost }}>
-        <ShowInfoContext.Provider value={{ showPostInfo, setShowPostInfo }}>
         <View style={styles.container}>
-            <MapView style={styles.map} showUserLocation={true} customMapStyle={customMapStylee}>
-                {posts.map(post => (
+            <MapView style={styles.map}
+                showUserLocation={true}
+                customMapStyle={customMapStylee}>
+                {postsContext.posts.map(post => (
                     <Marker
                         key={post._id}
                         coordinate={{
@@ -48,23 +50,24 @@ export default function PostList({ navigation }) { //
                             latitude: post.location.coordinates[1],
                         }}
                         onPress={() => {
-                            setClickedPost(post)
-                            setShowPostInfo(true)
+                            selectedPostContext.setSelectedPost(post)
+                            showInfoContext.setShowPostInfo(true)
                         }}
                         >
                         <CustomPostMarker post={post} />
                     </Marker>
                 ))}
             </MapView>
-            {!showMakePost && <TouchableHighlight style={styles.postButton} title="Add Post" onPress={() => setShowMakePost(true)}>
+            {!showMakePost && <TouchableHighlight
+                style={styles.postButton}
+                title="Add Post"
+                onPress={() => setShowMakePost(true)}>
                 <Text style={styles.buttonText}>make post</Text>
             </TouchableHighlight>}
-            <MakePost posts={posts} setPosts={setPosts} showMakePost={showMakePost} setShowMakePost={setShowMakePost} />
+            <MakePost posts={postsContext.posts} setPosts={postsContext.setPosts} showMakePost={showMakePost} setShowMakePost={setShowMakePost} />
             {/* <Button title="Refresh" onPress={() => getPosts()} /> */}
             <PostInfo />
         </View>
-        </ShowInfoContext.Provider>
-        </ClickedPostContext.Provider>
     )
 }
 
