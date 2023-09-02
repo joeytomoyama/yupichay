@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'white',
         borderRadius: 5,
+        elevation: 5,
     },
     postMarkerText: {
         color: 'white',

@@ -51,7 +51,7 @@ export default function PostList({ navigation }) { //
                             latitude: post.location.coordinates[1],
                         }}
                         onPress={() => {
-                            selectedPostContext.setSelectedPost(post)
+                            selectedPostContext.setSelectedPost(post._id)
                             showInfoContext.setShowPostInfo(true)
                         }}
                         >
@@ -90,10 +90,13 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingVertical: 10,
         paddingHorizontal: 20,
+        width: '90%',
+        elevation: 5,
     },
     buttonText: {
         fontSize: 16,
         color: 'white',
+        textAlign: 'center',
     },
 })
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Text, Modal, Button, TouchableWithoutFeedback, TouchableOpacity, Pressable } from 'react-native'
+import { View, StyleSheet, Text, Modal, Button, Pressable } from 'react-native'
 import { usePosts } from '../contexts/PostsContext'
 import { useSelectedPost } from '../contexts/SelectedPostContext'
 import { useShowPostInfo } from '../contexts/ShowPostInfoContext'
@@ -9,21 +9,23 @@ export default function PostInfo() {
 
     const postsState =  usePosts()
     const showInfoContext = useShowPostInfo()
-    const selectedPost = useSelectedPost().selectedPost
+    const selectedPostId = useSelectedPost().selectedPost
+
+    const selectedPost = postsState.posts.find(post => post._id === selectedPostId)
 
     const likePost = async () => {
         try {
-            console.log("id: " + JSON.stringify(selectedPost))
-            const response = await fetch(`${apiBaseUrl}/posts/${selectedPost.clickedPost._id}/like`, {
+            console.log("id: " + JSON.stringify(selectedPostId))
+            await fetch(`${apiBaseUrl}/posts/${selectedPostId}/like`, {
                 method: 'PUT',
             })
-            // const json = await response.json()
-            console.log(response)
-            postsState.posts.map(post => {
-                if (post._id === selectedPost._id) {
-                    post.likes++
+
+            postsState.setPosts((posts) => posts.map(post => {
+                if (post._id === selectedPostId) {
+                    return { ...post, likes: post.likes + 1 }
                 }
-            })
+                return post
+            }))
         } catch (error) {
             // console.error(error)
         }
@@ -31,11 +33,10 @@ export default function PostInfo() {
 
     const deletePost = async () => {
         try {
-            const response = await fetch(`${apiBaseUrl}/posts/${selectedPost._id}`, {
+            await fetch(`${apiBaseUrl}/posts/${selectedPost._id}`, {
                 method: 'DELETE',
             })
-            // const json = await response.json()
-            console.log(response)
+
             postsState.setPosts(postsState.posts.filter(post => post._id !== selectedPost._id))
             // postsState.setPosts((posts) => posts.filter(post => post._id !== selectedPost._id))
             closePostInfo()
@@ -61,10 +62,9 @@ export default function PostInfo() {
                     onPress={closePostInfo}
                     >
                 <View style={styles.drawer}>
-                    <Text>{`Message: ${selectedPost?.message ?? null}`}</Text>
+                    <Text>{`Message: ${selectedPost?.message}`}</Text>
                     <Text>{`Author: Joey`}</Text>
-                    <Text>{`Likes: ${selectedPost?.likes ?? null}`}</Text>
-                    <Text>{"info: " + showInfoContext.showPostInfo}</Text>
+                    <Text>{`Likes: ${selectedPost?.likes}`}</Text>
                     <Button
                         title={"like"}
                         onPress={likePost}
@@ -98,10 +98,15 @@ const styles = StyleSheet.create({
         // opacity: 0,
     },
     drawer: {
-        position: 'absolute',
-        bottom: 0,
-        backgroundColor: 'white',
         height: '30%',
         width: '100%',
+        position: 'absolute',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        bottom: 0,
+        backgroundColor: 'white',
+        elevation: 5,
     }
 })
