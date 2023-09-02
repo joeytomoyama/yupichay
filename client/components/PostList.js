@@ -5,6 +5,7 @@ import MapView, { Marker } from 'react-native-maps'
 import CustomPostMarker from './CustomPostMarker'
 import MakePost from './MakePost'
 import PostInfo from './PostInfo'
+
 import { useSelectedPost } from '../contexts/SelectedPostContext'
 import { useShowPostInfo } from '../contexts/ShowPostInfoContext'
 import { usePosts } from '../contexts/PostsContext'

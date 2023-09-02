@@ -19,14 +19,14 @@ export default function PostInfo() {
             })
             // const json = await response.json()
             console.log(response)
+            postsState.posts.map(post => {
+                if (post._id === selectedPost._id) {
+                    post.likes++
+                }
+            })
         } catch (error) {
             // console.error(error)
         }
-        postsState.posts.map(post => {
-            if (post._id === selectedPost._id) {
-                post.likes++
-            }
-        })
     }
 
     const deletePost = async () => {
@@ -36,12 +36,12 @@ export default function PostInfo() {
             })
             // const json = await response.json()
             console.log(response)
+            postsState.setPosts(postsState.posts.filter(post => post._id !== selectedPost._id))
+            // postsState.setPosts((posts) => posts.filter(post => post._id !== selectedPost._id))
+            closePostInfo()
         } catch (error) {
-            console.error(error)
+            // console.error(error)
         }
-        postsState.setPosts(postsState.posts.filter(post => post._id !== selectedPost._id))
-        // postsState.setPosts((posts) => posts.filter(post => post._id !== selectedPost._id))
-        closePostInfo()
     }
 
     const closePostInfo = () => showInfoContext.setShowPostInfo(false)
