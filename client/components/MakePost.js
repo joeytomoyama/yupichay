@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Modal, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Button, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
+import { usePosts } from '../contexts/PostsContext'
 
-export default function MakePost({ posts, setPosts, showMakePost, setShowMakePost }) { //
+export default function MakePost({ showMakePost, setShowMakePost }) { //
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
 
     const [isLoading, setLoading] = useState(true)
     const [latitude, setLatitude] = useState(0)
     const [longitude, setLongitude] = useState(0)
     const [message, setMessage] = useState('')
+
+    const postsState = usePosts()
 
     const makePost = async () => {
         try {
@@ -25,7 +28,7 @@ export default function MakePost({ posts, setPosts, showMakePost, setShowMakePos
                 body: JSON.stringify(newPost)
             })
             const json = await response.json()
-            setPosts([...posts, json])
+            postsState.setPosts([...postsState.posts, json])
             // navigation.navigate('PostList')
             setShowMakePost(false)
         } catch (error) {
@@ -41,37 +44,39 @@ export default function MakePost({ posts, setPosts, showMakePost, setShowMakePos
                 transparent={true}
                 visible={showMakePost}
                 onRequestClose={() => {
-                    Alert.alert('Modal has been closed.');
-                    setShowMakePost(!showMakePost);
+                    Alert.alert('Modal has been closed.')
+                    setShowMakePost(!showMakePost)
                 }}>
-                <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <Text style={{fontSize: 24}}>Make Post</Text>
-                    <TextInput
-                        keyboardType='numeric'
-                        placeholder='longitude'
-                        style={styles.inputText}
-                        onChangeText={text => setLongitude(text)}
-                    ></TextInput>
-                    <TextInput
-                        keyboardType='numeric'
-                        placeholder='latitude'
-                        style={styles.inputText}
-                        onChangeText={text => setLatitude(text)}
-                    ></TextInput>
-                    <TextInput
-                        placeholder='message'
-                        style={styles.inputText}
-                        onChangeText={text => setMessage(text)}
-                    ></TextInput>
-                    <Button title="Add Post" onPress={(makePost)} />
-                    <Button
-                        title="Cancel"
-                        onPress={() => setShowMakePost(false)}
-                        color="#841584"
-                    />
-                </View>
-                </View>
+                <Pressable style={StyleSheet.absoluteFillObject} onPress={() => setShowMakePost(false)}>
+                    <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={{fontSize: 24}}>Make Post</Text>
+                        <TextInput
+                            keyboardType='numeric'
+                            placeholder='longitude'
+                            style={styles.inputText}
+                            onChangeText={text => setLongitude(text)}
+                        ></TextInput>
+                        <TextInput
+                            keyboardType='numeric'
+                            placeholder='latitude'
+                            style={styles.inputText}
+                            onChangeText={text => setLatitude(text)}
+                        ></TextInput>
+                        <TextInput
+                            placeholder='message'
+                            style={styles.inputText}
+                            onChangeText={text => setMessage(text)}
+                        ></TextInput>
+                        <Button title="Add Post" onPress={(makePost)} />
+                        {/* <Button
+                            title="Cancel"
+                            onPress={() => setShowMakePost(false)}
+                            color="#841584"
+                        /> */}
+                    </View>
+                    </View>
+                </Pressable>
             </Modal>
         </View>
     )
@@ -124,4 +129,4 @@ const styles = StyleSheet.create({
         fontSize: 18,
         padding: 5,
     }
-  });
+  })

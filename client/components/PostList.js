@@ -65,7 +65,10 @@ export default function PostList({ navigation }) { //
                 onPress={() => setShowMakePost(true)}>
                 <Text style={styles.buttonText}>make post</Text>
             </TouchableHighlight>}
-            <MakePost posts={postsContext.posts} setPosts={postsContext.setPosts} showMakePost={showMakePost} setShowMakePost={setShowMakePost} />
+            <MakePost
+                showMakePost={showMakePost}
+                setShowMakePost={setShowMakePost}
+            />
             {/* <Button title="Refresh" onPress={() => getPosts()} /> */}
             <PostInfo />
         </View>

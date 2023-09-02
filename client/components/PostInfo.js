@@ -58,7 +58,7 @@ export default function PostInfo() {
                 onRequestClose={closePostInfo}
                 >
                 <Pressable
-                    style={styles.fill}
+                    style={StyleSheet.absoluteFillObject}
                     onPress={closePostInfo}
                     >
                 <View style={styles.drawer}>
