@@ -1,10 +1,40 @@
 import React, { useContext } from 'react'
 import { View, StyleSheet, Text, Modal, Button } from 'react-native'
-import { ClickedPostContext, OpenPostInfoContext } from './PostList'
+import { ClickedPostContext, ShowInfoContext } from './PostList'
 
 export default function PostInfo() {
-    const openPostInfo = useContext(OpenPostInfoContext)
-    const lastClickedPost = useContext(ClickedPostContext)
+    const apiBaseUrl = 'http://192.168.0.244:3000/api'
+
+    const showInfoContext = useContext(ShowInfoContext)
+    const lastClickedPost = useContext(ClickedPostContext).clickedPost
+
+    const likePost = async () => {
+        try {
+            console.log("id: " + lastClickedPost._id)
+            const response = await fetch(`${apiBaseUrl}/posts/${lastClickedPost.clickedPost._id}/like`, {
+                method: 'PUT',
+            })
+            // const json = await response.json()
+            console.log(response)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const deletePost = async () => {
+        try {
+            const response = await fetch(`${apiBaseUrl}/posts/${lastClickedPost._id}`, {
+                method: 'DELETE',
+            })
+            // const json = await response.json()
+            console.log(response)
+        } catch (error) {
+            console.error(error)
+        }
+        console.log('deletePost')
+    }
+
+    const closePostInfo = () => showInfoContext.setShowPostInfo(false)
 
     return (
         <View
@@ -13,15 +43,23 @@ export default function PostInfo() {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={openPostInfo.showPostInfo}>
-                {/* visible={false}> */}
+                visible={showInfoContext.showPostInfo}>
                 <View style={styles.drawer}>
-                    <Text>{`Message: ${lastClickedPost.clickedPost}`}</Text>
-                    <Text>PostAuthor</Text>
-                    <Text>{"info: " + openPostInfo.showPostInfo}</Text>
+                    <Text>{`Message: ${lastClickedPost?.message ?? null}`}</Text>
+                    <Text>{`Author: Joey`}</Text>
+                    <Text>{`Likes: ${lastClickedPost?.likes ?? null}`}</Text>
+                    <Text>{"info: " + showInfoContext.showPostInfo}</Text>
+                    <Button
+                        title={"like"}
+                        onPress={likePost}
+                    />
+                    <Button
+                        title={"delete"}
+                        onPress={deletePost}
+                    />
                     <Button
                         title={"close"}
-                        onPress={() => openPostInfo.setShowPostInfo(false)}
+                        onPress={closePostInfo}
                     />
                 </View>
             </Modal>

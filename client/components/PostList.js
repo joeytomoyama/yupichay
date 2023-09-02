@@ -1,24 +1,23 @@
-import React, { useState, useEffect, useContext, createContext } from 'react'
-import MapView from 'react-native-maps';
-import { Marker } from 'react-native-maps';
-import { StyleSheet, Text, TouchableHighlight, View } from 'react-native'
+import React, { useState, useEffect, createContext } from 'react'
+import { Text, View, TouchableHighlight, StyleSheet, RefreshControl } from 'react-native'
+import MapView, { Marker } from 'react-native-maps'
 
-import CustomPostMarker from './CustomPostMarker';
-import MakePost from './MakePost';
-import PostInfo from './PostInfo';
-
+import CustomPostMarker from './CustomPostMarker'
+import MakePost from './MakePost'
+import PostInfo from './PostInfo'
 
 export const ClickedPostContext = createContext(null)
-export const OpenPostInfoContext = createContext(false)
+export const ShowInfoContext = createContext(false)
 
 export default function PostList({ navigation }) { //
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
 
     const [posts, setPosts] = useState([])
-    const [isLoading, setLoading] = useState(true)
     const [showMakePost, setShowMakePost] = useState(false)
     const [showPostInfo, setShowPostInfo] = useState(false)
     const [clickedPost, setClickedPost] = useState(null)
+    
+    const [isLoading, setLoading] = useState(true)
 
     const getPosts = async () => {
         try {
@@ -38,7 +37,7 @@ export default function PostList({ navigation }) { //
     
     return (
         <ClickedPostContext.Provider value={{ clickedPost, setClickedPost }}>
-        <OpenPostInfoContext.Provider value={{ showPostInfo, setShowPostInfo }}>
+        <ShowInfoContext.Provider value={{ showPostInfo, setShowPostInfo }}>
         <View style={styles.container}>
             <MapView style={styles.map} showUserLocation={true} customMapStyle={customMapStylee}>
                 {posts.map(post => (
@@ -49,11 +48,8 @@ export default function PostList({ navigation }) { //
                             latitude: post.location.coordinates[1],
                         }}
                         onPress={() => {
-                          setShowPostInfo(true)
-                          setClickedPost(post.message)
-                          // setClickedPost(post => ({
-                          //   ...post
-                          // }))
+                            setClickedPost(post)
+                            setShowPostInfo(true)
                         }}
                         >
                         <CustomPostMarker post={post} />
@@ -67,7 +63,7 @@ export default function PostList({ navigation }) { //
             {/* <Button title="Refresh" onPress={() => getPosts()} /> */}
             <PostInfo />
         </View>
-        </OpenPostInfoContext.Provider>
+        </ShowInfoContext.Provider>
         </ClickedPostContext.Provider>
     )
 }

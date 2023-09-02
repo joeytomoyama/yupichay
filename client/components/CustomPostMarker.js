@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import { ClickedPostContext, OpenPostInfoContext } from './PostList'
+// import { ClickedPostContext, OpenShowInfoContext } from './PostList'
 
 export default function CustomPostMarker({ post }) {
-    const openPostInfo = useContext(OpenPostInfoContext)
-    const clickedPost = useContext(ClickedPostContext)
+    // const openPostInfo = useContext(OpenShowInfoContext)
+    // const clickedPost = useContext(ClickedPostContext)
 
     return (
         <View style={styles.customPostMarker}>
