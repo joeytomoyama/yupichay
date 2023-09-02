@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet, Text, Modal, Button } from 'react-native'
+import { View, StyleSheet, Text, Modal, Button, TouchableWithoutFeedback, TouchableOpacity, Pressable } from 'react-native'
 import { usePosts } from '../contexts/PostsContext'
 import { useSelectedPost } from '../contexts/SelectedPostContext'
 import { useShowPostInfo } from '../contexts/ShowPostInfoContext'
@@ -53,7 +53,13 @@ export default function PostInfo() {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={showInfoContext.showPostInfo}>
+                visible={showInfoContext.showPostInfo}
+                onRequestClose={closePostInfo}
+                >
+                <Pressable
+                    style={styles.fill}
+                    onPress={closePostInfo}
+                    >
                 <View style={styles.drawer}>
                     <Text>{`Message: ${selectedPost?.message ?? null}`}</Text>
                     <Text>{`Author: Joey`}</Text>
@@ -72,6 +78,7 @@ export default function PostInfo() {
                         onPress={closePostInfo}
                     />
                 </View>
+                </Pressable>
             </Modal>
         </View>
     )
@@ -79,10 +86,16 @@ export default function PostInfo() {
 
 const styles = StyleSheet.create({
     container: {
-    //   flex: 1,
+      flex: 1,
     //   alignItems: 'center',
     //   width: '100%',
     //   height: '100%',
+    },
+    fill: {
+        position: 'absolute',
+        width: '100%',
+        height: '100%',
+        // opacity: 0,
     },
     drawer: {
         position: 'absolute',
