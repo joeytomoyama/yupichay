@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Text, View, TouchableHighlight, StyleSheet } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
@@ -14,6 +14,8 @@ import * as Location from 'expo-location'
 
 export default function PostList({ navigation }) { //
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
+
+    const mapRef = useRef(null)
 
     const [showMakePost, setShowMakePost] = useState(false)
 
@@ -53,6 +55,13 @@ export default function PostList({ navigation }) { //
             const location = await Location.getLastKnownPositionAsync({})
             // const location = await Location.getCurrentPositionAsync({})
             setLocation(location)
+            mapRef.current.animateToRegion({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            }, 2000)
+
         } catch (error) {
             console.error(error)
         }
@@ -66,7 +75,10 @@ export default function PostList({ navigation }) { //
     return (
         <View style={styles.container}>
             <MapView style={styles.map}
+                ref={mapRef}
                 showUserLocation={true}
+                pitchEnabled={false}
+                rotateEnabled={false}
                 customMapStyle={customMapStylee}
                 initialRegion={{
                     latitude: location?.coords.latitude,
