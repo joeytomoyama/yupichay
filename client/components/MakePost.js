@@ -2,15 +2,38 @@ import React, { useState, useEffect } from 'react'
 import { Button, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { usePosts } from '../contexts/PostsContext'
 
+import * as Location from 'expo-location'
+
 export default function MakePost({ showMakePost, setShowMakePost }) { //
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
 
     const [isLoading, setLoading] = useState(true)
-    const [latitude, setLatitude] = useState(0)
     const [longitude, setLongitude] = useState(0)
+    const [latitude, setLatitude] = useState(0)
     const [message, setMessage] = useState('')
 
     const postsState = usePosts()
+
+    const getLocation = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync()
+            if (status !== 'granted') {
+                // setErrorMsg('Permission to access location was denied')
+                setShowMakePost(false)
+                return
+            }
+        
+            const location = await Location.getCurrentPositionAsync({})
+            setLongitude(location.coords.longitude)
+            setLatitude(location.coords.latitude)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+    
+    useEffect(() => {
+        getLocation()
+    }, [])
 
     const makePost = async () => {
         try {
@@ -20,6 +43,7 @@ export default function MakePost({ showMakePost, setShowMakePost }) { //
                     coordinates: [longitude, latitude]
                 }
             }
+
             const response = await fetch(`${apiBaseUrl}/posts`, {
                 method: 'POST',
                 headers: {
@@ -29,10 +53,9 @@ export default function MakePost({ showMakePost, setShowMakePost }) { //
             })
             const json = await response.json()
             postsState.setPosts([...postsState.posts, json])
-            // navigation.navigate('PostList')
+            
             setShowMakePost(false)
         } catch (error) {
-            console.log(longitude, latitude)
             console.error(error)
         }
     }

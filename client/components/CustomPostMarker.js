@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
         maxWidth: 100,
         // maxHeight: 100,
         borderWidth: 1,
-        borderColor: 'white',
+        borderColor: 'orange',
         borderRadius: 5,
         elevation: 5,
     },

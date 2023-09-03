@@ -10,6 +10,7 @@ import { useSelectedPost } from '../contexts/SelectedPostContext'
 import { useShowPostInfo } from '../contexts/ShowPostInfoContext'
 import { usePosts } from '../contexts/PostsContext'
 
+import * as Location from 'expo-location'
 
 export default function PostList({ navigation }) { //
     const apiBaseUrl = 'http://192.168.0.244:3000/api'
@@ -17,6 +18,13 @@ export default function PostList({ navigation }) { //
     const [showMakePost, setShowMakePost] = useState(false)
 
     const [isLoading, setLoading] = useState(true)
+
+    const [location, setLocation] = useState({
+        coords: {
+            latitude: 40.7128,
+            longitude: -74.0060,
+        }
+    })
 
     const postsContext = usePosts()
     const selectedPostContext = useSelectedPost()
@@ -34,15 +42,39 @@ export default function PostList({ navigation }) { //
         }
     }
 
+    const getRoughLocation = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync()
+            if (status !== 'granted') {
+                setErrorMsg('Permission to access location was denied')
+                return
+            }
+
+            const location = await Location.getLastKnownPositionAsync({})
+            // const location = await Location.getCurrentPositionAsync({})
+            setLocation(location)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     useEffect(() => {
         getPosts()
+        getRoughLocation()
     }, [])
     
     return (
         <View style={styles.container}>
             <MapView style={styles.map}
                 showUserLocation={true}
-                customMapStyle={customMapStylee}>
+                customMapStyle={customMapStylee}
+                initialRegion={{
+                    latitude: location?.coords.latitude,
+                    longitude: location?.coords.longitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                }}
+                >
                 {postsContext.posts.map(post => (
                     <Marker
                         key={post._id}
