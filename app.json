@@ -14,6 +14,7 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "permissions": ["ACCESS_FINE_LOCATION"],
     "ios": {
       "supportsTablet": true
     },
