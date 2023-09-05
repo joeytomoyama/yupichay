@@ -12,8 +12,7 @@ import { usePosts } from '../contexts/PostsContext'
 
 import * as Location from 'expo-location'
 
-export default function PostList({ navigation }) { //
-    const apiBaseUrl = 'http://192.168.0.244:3000/api'
+export default function PostList({ navigation }) {
 
     const mapRef = useRef(null)
 
@@ -34,7 +33,7 @@ export default function PostList({ navigation }) { //
 
     const getPosts = async () => {
         try {
-            const response = await fetch(`${apiBaseUrl}/posts`)
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts`)
             const json = await response.json()
             postsContext.setPosts(json)
         } catch (error) {

@@ -5,8 +5,6 @@ import { useSelectedPost } from '../contexts/SelectedPostContext'
 import { useShowPostInfo } from '../contexts/ShowPostInfoContext'
 
 export default function PostInfo() {
-    const apiBaseUrl = 'http://192.168.0.244:3000/api'
-
     const postsState =  usePosts()
     const showInfoContext = useShowPostInfo()
     const selectedPostId = useSelectedPost().selectedPost
@@ -16,7 +14,7 @@ export default function PostInfo() {
     const likePost = async () => {
         try {
             console.log("id: " + JSON.stringify(selectedPostId))
-            await fetch(`${apiBaseUrl}/posts/${selectedPostId}/like`, {
+            await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts/${selectedPostId}/like`, {
                 method: 'PUT',
             })
 
@@ -33,7 +31,7 @@ export default function PostInfo() {
 
     const deletePost = async () => {
         try {
-            await fetch(`${apiBaseUrl}/posts/${selectedPost._id}`, {
+            await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts/${selectedPost._id}`, {
                 method: 'DELETE',
             })
 

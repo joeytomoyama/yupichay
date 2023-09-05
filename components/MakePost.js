@@ -4,8 +4,7 @@ import { usePosts } from '../contexts/PostsContext'
 
 import * as Location from 'expo-location'
 
-export default function MakePost({ showMakePost, setShowMakePost }) { //
-    const apiBaseUrl = 'http://192.168.0.244:3000/api'
+export default function MakePost({ showMakePost, setShowMakePost }) {
 
     const [isLoading, setLoading] = useState(true)
     const [longitude, setLongitude] = useState(0)
@@ -44,7 +43,7 @@ export default function MakePost({ showMakePost, setShowMakePost }) { //
                 }
             }
 
-            const response = await fetch(`${apiBaseUrl}/posts`, {
+            const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
