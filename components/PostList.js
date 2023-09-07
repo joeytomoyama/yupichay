@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Text, View, TouchableHighlight, StyleSheet } from 'react-native'
+import { Text, View, TouchableHighlight, StyleSheet, Pressable } from 'react-native'
 import MapView, { Marker } from 'react-native-maps'
 
 import CustomPostMarker from './CustomPostMarker'
@@ -102,6 +102,7 @@ export default function PostList({ navigation }) {
                     </Marker>
                 ))}
             </MapView>
+            {/* <Pressable style={styles.openDrawerButton}/> */}
             {!showMakePost && <TouchableHighlight
                 style={styles.postButton}
                 title="Add Post"
@@ -128,6 +129,18 @@ const styles = StyleSheet.create({
     map: {
       width: '100%',
       height: '100%',
+    },
+    openDrawerButton: {
+        position: 'absolute',
+        top: 20,
+        left: 20,
+        backgroundColor: 'orange',
+        borderRadius: 5,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        width: 50,
+        height: 50,
+        elevation: 5,
     },
     postButton: {
         position: 'absolute',

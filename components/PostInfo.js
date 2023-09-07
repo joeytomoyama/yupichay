@@ -60,10 +60,10 @@ export default function PostInfo() {
                     onPress={closePostInfo}
                     >
                 <View style={styles.drawer}>
-                    <Text>{`Message: ${selectedPost?.message}`}</Text>
+                    <Text style={styles.messageText}>{selectedPost?.message}</Text>
                     <Text>{`Author: Joey`}</Text>
                     <Text>{`Likes: ${selectedPost?.likes}`}</Text>
-                    <Button
+                    {/* <Button
                         title={"like"}
                         onPress={likePost}
                     />
@@ -74,7 +74,25 @@ export default function PostInfo() {
                     <Button
                         title={"close"}
                         onPress={closePostInfo}
-                    />
+                    /> */}
+                    <Pressable
+                        style={styles.pressableContainer}
+                        onPress={likePost}
+                    >
+                        <Text style={styles.buttonText}>Like</Text>
+                    </Pressable>
+                    <Pressable
+                        style={styles.pressableContainer}
+                        onPress={deletePost}
+                    >
+                        <Text style={styles.buttonText}>Delete</Text>
+                    </Pressable>
+                    {/* <Pressable
+                        style={styles.pressableContainer}
+                        onPress={closePostInfo}
+                    >
+                        <Text style={styles.buttonText}>Close</Text>
+                    </Pressable> */}
                 </View>
                 </Pressable>
             </Modal>
@@ -106,5 +124,21 @@ const styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: 'white',
         elevation: 5,
-    }
+    },
+    messageText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+    },
+    pressableContainer: {
+        width: '80%',
+        backgroundColor: 'orange',
+        padding: 10,
+        borderRadius: 5,
+        margin: 5,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+    },
 })
