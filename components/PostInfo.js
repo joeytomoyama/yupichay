@@ -63,18 +63,6 @@ export default function PostInfo() {
                     <Text style={styles.messageText}>{selectedPost?.message}</Text>
                     <Text>{`Author: Joey`}</Text>
                     <Text>{`Likes: ${selectedPost?.likes}`}</Text>
-                    {/* <Button
-                        title={"like"}
-                        onPress={likePost}
-                    />
-                    <Button
-                        title={"delete"}
-                        onPress={deletePost}
-                    />
-                    <Button
-                        title={"close"}
-                        onPress={closePostInfo}
-                    /> */}
                     <Pressable
                         style={styles.pressableContainer}
                         onPress={likePost}
@@ -87,12 +75,6 @@ export default function PostInfo() {
                     >
                         <Text style={styles.buttonText}>Delete</Text>
                     </Pressable>
-                    {/* <Pressable
-                        style={styles.pressableContainer}
-                        onPress={closePostInfo}
-                    >
-                        <Text style={styles.buttonText}>Close</Text>
-                    </Pressable> */}
                 </View>
                 </Pressable>
             </Modal>

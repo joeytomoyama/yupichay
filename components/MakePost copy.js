@@ -10,7 +10,6 @@ export default function MakePost({ showMakePost, setShowMakePost }) {
     const [longitude, setLongitude] = useState(0)
     const [latitude, setLatitude] = useState(0)
     const [message, setMessage] = useState('')
-    const [developerMode, setDeveloperMode] = useState(false)
 
     const postsState = usePosts()
 
@@ -18,6 +17,7 @@ export default function MakePost({ showMakePost, setShowMakePost }) {
         try {
             const { status } = await Location.requestForegroundPermissionsAsync()
             if (status !== 'granted') {
+                // setErrorMsg('Permission to access location was denied')
                 setShowMakePost(false)
                 return
             }
@@ -72,35 +72,25 @@ export default function MakePost({ showMakePost, setShowMakePost }) {
                 <Pressable style={StyleSheet.absoluteFillObject} onPress={() => setShowMakePost(false)}>
                     <View style={styles.centeredView}>
                     <View style={styles.modalView}>
-                        {developerMode && (<>
-                            <TextInput
-                                style={styles.inputText}
-                                keyboardType='numeric'
-                                placeholder='longitude'
-                                placeholderTextColor={'white'}
-                                onChangeText={text => setLongitude(text)}
-                            ></TextInput>
-                            <TextInput
-                                style={styles.inputText}
-                                keyboardType='numeric'
-                                placeholder='latitude'
-                                placeholderTextColor={'white'}
-                                onChangeText={text => setLatitude(text)}
-                            ></TextInput>
-                        </>)}
+                        <Text style={{fontSize: 24}}>Make Post</Text>
                         <TextInput
+                            keyboardType='numeric'
+                            placeholder='longitude'
                             style={styles.inputText}
+                            onChangeText={text => setLongitude(text)}
+                        ></TextInput>
+                        <TextInput
+                            keyboardType='numeric'
+                            placeholder='latitude'
+                            style={styles.inputText}
+                            onChangeText={text => setLatitude(text)}
+                        ></TextInput>
+                        <TextInput
                             placeholder='message'
-                            placeholderTextColor={'white'}
+                            style={styles.inputText}
                             onChangeText={text => setMessage(text)}
                         ></TextInput>
-                        <Pressable
-                            style={styles.button}
-                            onPress={makePost}
-                            onLongPress={() => setDeveloperMode(!developerMode)}
-                        >
-                            <Text style={styles.addPostText}>Add Post</Text>
-                        </Pressable>
+                        <Button title="Add Post" onPress={(makePost)} />
                         {/* <Button
                             title="Cancel"
                             onPress={() => setShowMakePost(false)}
@@ -123,9 +113,9 @@ const styles = StyleSheet.create({
     },
     modalView: {
       margin: 20,
-      backgroundColor: 'orange',
+      backgroundColor: 'white',
       borderRadius: 20,
-      padding: 15,
+      padding: 35,
       alignItems: 'center',
       shadowColor: '#000',
       shadowOffset: {
@@ -137,20 +127,28 @@ const styles = StyleSheet.create({
       elevation: 5,
     },
     button: {
-      borderRadius: 5,
+      borderRadius: 20,
       padding: 10,
       elevation: 2,
-        backgroundColor: 'white',
     },
-    addPostText: {
-        fontSize: 16,
-        color: 'black',
-        textAlign: 'center',
+    buttonOpen: {
+      backgroundColor: '#F194FF',
+    },
+    buttonClose: {
+      backgroundColor: '#2196F3',
+    },
+    textStyle: {
+      color: 'white',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
     },
     // make input text bigger
     inputText: {
         fontSize: 18,
         padding: 5,
-        color: 'white',
     }
   })

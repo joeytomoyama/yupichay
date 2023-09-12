@@ -43,6 +43,22 @@ export default function PostList({ navigation }) {
         }
     }
 
+	const getLocation = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync()
+            if (status !== 'granted') {
+                // setErrorMsg('Permission to access location was denied')
+                setShowMakePost(false)
+                return
+            }
+        
+            const location = await Location.getCurrentPositionAsync({})
+			setLocation(location)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     const getRoughLocation = async () => {
         try {
             const { status } = await Location.requestForegroundPermissionsAsync()
@@ -64,6 +80,18 @@ export default function PostList({ navigation }) {
         } catch (error) {
             console.error(error)
         }
+    }
+
+    const makePost = async () => {
+      await getLocation()
+      mapRef.current.animateToRegion({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      }, 1000)
+		// postsContext.setPosts((prev) => [...prev, { message: 'test', location: { coordinates: [location.coords.longitude, location.coords.latitude] } }])
+		  setShowMakePost(true)
     }
 
     useEffect(() => {
@@ -106,7 +134,7 @@ export default function PostList({ navigation }) {
             {!showMakePost && <TouchableHighlight
                 style={styles.postButton}
                 title="Add Post"
-                onPress={() => setShowMakePost(true)}>
+                onPress={makePost}>
                 <Text style={styles.buttonText}>make post</Text>
             </TouchableHighlight>}
             <MakePost
