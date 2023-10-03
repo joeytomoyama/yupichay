@@ -5,11 +5,11 @@ import { useSelectedPost } from '../contexts/SelectedPostContext'
 import { useShowPostInfo } from '../contexts/ShowPostInfoContext'
 
 export default function PostInfo() {
-    const postsState =  usePosts()
-    const showInfoContext = useShowPostInfo()
+    const { posts, setPosts }=  usePosts()
+    const { showPostInfo, setShowPostInfo }= useShowPostInfo()
     const selectedPostId = useSelectedPost().selectedPost
 
-    const selectedPost = postsState.posts.find(post => post._id === selectedPostId)
+    const selectedPost = posts?.find(post => post._id === selectedPostId)
 
     const likePost = async () => {
         try {
@@ -18,14 +18,14 @@ export default function PostInfo() {
                 method: 'PUT',
             })
 
-            postsState.setPosts((posts) => posts.map(post => {
+            setPosts((posts) => posts.map(post => {
                 if (post._id === selectedPostId) {
                     return { ...post, likes: post.likes + 1 }
                 }
                 return post
             }))
         } catch (error) {
-            // console.error(error)
+            console.error(error)
         }
     }
 
@@ -35,15 +35,15 @@ export default function PostInfo() {
                 method: 'DELETE',
             })
 
-            postsState.setPosts(postsState.posts.filter(post => post._id !== selectedPost._id))
-            // postsState.setPosts((posts) => posts.filter(post => post._id !== selectedPost._id))
+            setPosts(posts.filter(post => post._id !== selectedPostId))
+            // setPosts((posts) => posts.filter(post => post._id !== selectedPost._id))
             closePostInfo()
         } catch (error) {
             // console.error(error)
         }
     }
 
-    const closePostInfo = () => showInfoContext.setShowPostInfo(false)
+    const closePostInfo = () => setShowPostInfo(false)
 
     return (
         <View
@@ -52,7 +52,7 @@ export default function PostInfo() {
             <Modal
                 animationType="slide"
                 transparent={true}
-                visible={showInfoContext.showPostInfo}
+                visible={showPostInfo}
                 onRequestClose={closePostInfo}
                 >
                 <Pressable

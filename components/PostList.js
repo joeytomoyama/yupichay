@@ -8,9 +8,10 @@ import PostInfo from './PostInfo'
 
 import { useSelectedPost } from '../contexts/SelectedPostContext'
 import { useShowPostInfo } from '../contexts/ShowPostInfoContext'
+import { useLocation } from '../contexts/LocationContext'
 import { usePosts } from '../contexts/PostsContext'
 
-import * as Location from 'expo-location'
+import { getLocation } from './util'
 
 export default function PostList({ navigation }) {
 
@@ -20,83 +21,79 @@ export default function PostList({ navigation }) {
 
     const [isLoading, setLoading] = useState(true)
 
-    const [location, setLocation] = useState({
-        coords: {
-            latitude: 40.7128,
-            longitude: -74.0060,
-        }
-    })
+    const { posts, setPosts } = usePosts()
+    const { selectedPost, setSelectedPost }= useSelectedPost()
+    const { showPostInfo, setShowPostInfo } = useShowPostInfo()
+	const { location, setLocation } = useLocation()
 
-    const postsContext = usePosts()
-    const selectedPostContext = useSelectedPost()
-    const showInfoContext = useShowPostInfo()
+    // const getPosts = async () => {
+    //     try {
+    //         const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts`)
+    //         const json = await response.json()
+    //         setPosts(json)
+    //     } catch (error) {
+    //         console.error(error)
+    //     } finally {
+    //         setLoading(false)
+    //     }
+    // }
 
-    const getPosts = async () => {
-        try {
-            const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts`)
-            const json = await response.json()
-            postsContext.setPosts(json)
-        } catch (error) {
-            console.error(error)
-        } finally {
-            setLoading(false)
-        }
-    }
-
-	const getLocation = async () => {
-        try {
-            const { status } = await Location.requestForegroundPermissionsAsync()
-            if (status !== 'granted') {
-                // setErrorMsg('Permission to access location was denied')
-                setShowMakePost(false)
-                return
-            }
-        
-            const location = await Location.getCurrentPositionAsync({})
-			setLocation(location)
-        } catch (error) {
-            console.error(error)
-        }
-    }
-
-    const getRoughLocation = async () => {
-        try {
-            const { status } = await Location.requestForegroundPermissionsAsync()
-            if (status !== 'granted') {
-                // setErrorMsg('Permission to access location was denied')
-                return
-            }
-
-            const location = await Location.getLastKnownPositionAsync({})
-            // const location = await Location.getCurrentPositionAsync({})
-            setLocation(location)
-            mapRef.current.animateToRegion({
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            }, 2000)
-
-        } catch (error) {
-            console.error(error)
-        }
-    }
+	/**
+	 * get posts by location
+	 * @param {string} zoomLevel: either 'GLOBAL', 'DOMESTIC', or 'LOCAL'
+	 */
+	const getPostsByLocation = async (zoomLevel) => {
+		try {
+			// const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts?longitude=${location.coords.longitude}&latitude=${location.coords.latitude}`)
+			// const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts/${region.longitude}/${region.latitude}/1000`)
+			const { center: { longitude, latitude } } = await mapRef.current.getCamera()
+			// const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts/${longitude}/${latitude}/1000`)
+			const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts?longitude=${longitude}&latitude=${latitude}&zoomLevel=${zoomLevel}`)
+			const json = await response.json()
+			setPosts((prev) => [
+				...prev,
+				...json.filter(jPost => !prev.some(pPost => pPost._id === jPost._id))
+			])
+		} catch (error) {
+			console.error(error)
+		} finally {
+			setLoading(false)
+		}
+	}
 
     const makePost = async () => {
-      await getLocation()
-      mapRef.current.animateToRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }, 1000)
-		// postsContext.setPosts((prev) => [...prev, { message: 'test', location: { coordinates: [location.coords.longitude, location.coords.latitude] } }])
-		  setShowMakePost(true)
+		try {
+			const { longitude, latitude } = await getLocation(setLocation)
+			mapRef.current.animateToRegion({
+				longitude: longitude,
+				latitude: latitude,
+				longitudeDelta: 0.0421,
+				latitudeDelta: 0.0922,
+			}, 1000)
+			setTimeout(() => {
+				setShowMakePost(true)
+			}, 1000)
+		} catch (error) {
+			console.log(error)
+		}
     }
 
     useEffect(() => {
-        getPosts()
-        getRoughLocation()
+		getLocation(setLocation)
+			.then(() => {
+				console.log(location)
+				mapRef.current.animateToRegion({
+					longitude: location.longitude,
+					latitude: location.latitude,
+					longitudeDelta: 0.0421,
+					latitudeDelta: 0.0922,
+				}, 1000)
+				getPostsByLocation()
+			})
+			.catch((error) => {
+				console.error(error)
+				return
+			})
     }, [])
     
     return (
@@ -107,14 +104,14 @@ export default function PostList({ navigation }) {
                 pitchEnabled={false}
                 rotateEnabled={false}
                 customMapStyle={customMapStylee}
-                initialRegion={{
-                    latitude: location?.coords.latitude,
-                    longitude: location?.coords.longitude,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
+                onRegionChangeComplete={() => {
+					mapRef.current.getCamera().then((camera) => {
+						const mapZoom = camera.zoom
+						getPostsByLocation(mapZoom)
+					})
                 }}
                 >
-                {postsContext.posts.map(post => (
+                {posts.map(post => (
                     <Marker
                         key={post._id}
                         coordinate={{
@@ -122,8 +119,8 @@ export default function PostList({ navigation }) {
                             latitude: post.location.coordinates[1],
                         }}
                         onPress={() => {
-                            selectedPostContext.setSelectedPost(post._id)
-                            showInfoContext.setShowPostInfo(true)
+                            setSelectedPost(post._id)
+                            setShowPostInfo(true)
                         }}
                         >
                         <CustomPostMarker post={post} />

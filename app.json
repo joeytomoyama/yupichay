@@ -4,10 +4,10 @@
     "slug": "yupichay",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/yupichay-logo.jpg",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/yupichay-logo.jpg",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -33,7 +33,7 @@
       "package": "com.jtomoyama.yupichay"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/yupichay-logo.jpg"
     },
     "plugins": [
       [

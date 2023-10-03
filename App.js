@@ -9,6 +9,9 @@ import { NavigationContainer } from '@react-navigation/native'
 import { SelectedPostProvider } from './contexts/SelectedPostContext'
 import { ShowPostInfoProvider } from './contexts/ShowPostInfoContext'
 import { PostsProvider } from './contexts/PostsContext'
+import { LocationProvider } from './contexts/LocationContext'
+import { RegionProvider } from './contexts/RegionContext'
+
 import { createDrawerNavigator } from '@react-navigation/drawer'
 
 // const Stack = createNativeStackNavigator()
@@ -32,6 +35,8 @@ export default function App() {
     <PostsProvider>
     <SelectedPostProvider>
     <ShowPostInfoProvider>
+    <LocationProvider>
+    <RegionProvider>
       <NavigationContainer>
         <Drawer.Navigator initialRouteName="PostList">
             <Drawer.Screen
@@ -52,6 +57,8 @@ export default function App() {
             />
         </Drawer.Navigator>
       </NavigationContainer>
+    </RegionProvider>
+    </LocationProvider>
     </ShowPostInfoProvider>
     </SelectedPostProvider>
     </PostsProvider>

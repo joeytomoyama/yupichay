@@ -2,44 +2,28 @@ import React, { useState, useEffect } from 'react'
 import { Button, Modal, Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { usePosts } from '../contexts/PostsContext'
 
-import * as Location from 'expo-location'
+import { getLocation } from './util'
+import { useLocation } from '../contexts/LocationContext'
 
 export default function MakePost({ showMakePost, setShowMakePost }) {
 
     const [isLoading, setLoading] = useState(true)
-    const [longitude, setLongitude] = useState(0)
-    const [latitude, setLatitude] = useState(0)
     const [message, setMessage] = useState('')
     const [developerMode, setDeveloperMode] = useState(false)
 
-    const postsState = usePosts()
-
-    const getLocation = async () => {
-        try {
-            const { status } = await Location.requestForegroundPermissionsAsync()
-            if (status !== 'granted') {
-                setShowMakePost(false)
-                return
-            }
-        
-            const location = await Location.getCurrentPositionAsync({})
-            setLongitude(location.coords.longitude)
-            setLatitude(location.coords.latitude)
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    const { posts, setPosts } = usePosts()
+    const { location, setLocation } = useLocation()
     
     useEffect(() => {
-        getLocation()
+        getLocation(setLocation)
     }, [])
 
     const makePost = async () => {
         try {
             const newPost = {
-                message: message,
+                message,
                 location: {
-                    coordinates: [longitude, latitude]
+                    coordinates: [location.longitude, location.latitude]
                 }
             }
 
@@ -51,7 +35,7 @@ export default function MakePost({ showMakePost, setShowMakePost }) {
                 body: JSON.stringify(newPost)
             })
             const json = await response.json()
-            postsState.setPosts([...postsState.posts, json])
+            setPosts([...posts, json])
             
             setShowMakePost(false)
         } catch (error) {
