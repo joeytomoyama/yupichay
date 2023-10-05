@@ -120,7 +120,7 @@ export default function PostList({ navigation }) {
                             setShowPostInfo(true)
                         }}
                         >
-                        <CustomPostMarker post={post} />
+                        {/* <CustomPostMarker post={post} /> */}
                     </Marker>
                 ))}
             </MapView>
