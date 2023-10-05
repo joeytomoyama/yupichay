@@ -40,20 +40,21 @@ export default function PostList({ navigation }) {
 
 	/**
 	 * get posts by location
-	 * @param {string} zoomLevel: either 'GLOBAL', 'DOMESTIC', or 'LOCAL'
 	 */
-	const getPostsByLocation = async (zoomLevel) => {
+	const getPostsByLocation = async () => {
 		try {
 			// const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts?longitude=${location.coords.longitude}&latitude=${location.coords.latitude}`)
 			// const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts/${region.longitude}/${region.latitude}/1000`)
-			const { center: { longitude, latitude } } = await mapRef.current.getCamera()
+			const { center: { longitude, latitude }, zoom } = await mapRef.current.getCamera()
+			console.log(longitude, latitude, zoom)
 			// const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts/${longitude}/${latitude}/1000`)
-			const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts?longitude=${longitude}&latitude=${latitude}&zoomLevel=${zoomLevel}`)
+			const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts?longitude=${longitude}&latitude=${latitude}&zoomLevel=${zoom}`)
 			const json = await response.json()
-			setPosts((prev) => [
-				...prev,
-				...json.filter(jPost => !prev.some(pPost => pPost._id === jPost._id))
-			])
+			// setPosts((prev) => [ // adds new posts to old ones
+			// 	...prev,
+			// 	...json.filter(jPost => !prev.some(pPost => pPost._id === jPost._id))
+			// ])
+			setPosts(json)
 		} catch (error) {
 			console.error(error)
 		} finally {
@@ -81,7 +82,6 @@ export default function PostList({ navigation }) {
     useEffect(() => {
 		getLocation(setLocation)
 			.then(() => {
-				console.log(location)
 				mapRef.current.animateToRegion({
 					longitude: location.longitude,
 					latitude: location.latitude,
@@ -105,10 +105,7 @@ export default function PostList({ navigation }) {
                 rotateEnabled={false}
                 customMapStyle={customMapStylee}
                 onRegionChangeComplete={() => {
-					mapRef.current.getCamera().then((camera) => {
-						const mapZoom = camera.zoom
-						getPostsByLocation(mapZoom)
-					})
+					getPostsByLocation()
                 }}
                 >
                 {posts.map(post => (
