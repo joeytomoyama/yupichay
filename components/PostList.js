@@ -43,11 +43,8 @@ export default function PostList({ navigation }) {
 	 */
 	const getPostsByLocation = async () => {
 		try {
-			// const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts?longitude=${location.coords.longitude}&latitude=${location.coords.latitude}`)
-			// const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts/${region.longitude}/${region.latitude}/1000`)
 			const { center: { longitude, latitude }, zoom } = await mapRef.current.getCamera()
 			console.log(longitude, latitude, zoom)
-			// const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts/${longitude}/${latitude}/1000`)
 			const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/posts?longitude=${longitude}&latitude=${latitude}&zoomLevel=${zoom}`)
 			const json = await response.json()
 			// setPosts((prev) => [ // adds new posts to old ones
